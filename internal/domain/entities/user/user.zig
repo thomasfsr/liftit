@@ -32,6 +32,10 @@ const FirstName = struct {
             return NameError.NameTooLong;
         }
     }
+    fn get_value(self: @This()) []const u8 {
+        return self.firstname;
+    }
+ 
 };
 const LastName = struct {
     lastname: []const u8,
@@ -51,8 +55,20 @@ const LastName = struct {
             return NameError.NameTooLong;
         }
     }
+    fn get_value(self: @This()) []const u8 {
+        return self.lastname;
+    }
 };
 
-const PhoneNumber = u64;
-
-const Activate = bool;
+const PhoneNumber = struct {
+    phonenumber : u64,
+    fn init(phonenumber: u64) @This() {
+        return .{.phonenumber = phonenumber};
+    }
+    fn update(self : @This(), new_phonenumber: u64) void {
+        self.phonenumber = new_phonenumber;
+    }
+    fn get_value(self: @This()) u64 {
+        return self.phonenumber;
+    }
+};
