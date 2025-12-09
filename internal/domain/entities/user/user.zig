@@ -56,20 +56,3 @@ const LastName = struct {
 const PhoneNumber = u64;
 
 const Activate = bool;
-
-
-pub fn main() !void {
-    const fname = try FirstName.init("Thomas");
-    const lname = try LastName.init("Freire");
-
-    const myuser = User{
-        .ID = 1,
-        .FirstName = fname,
-        .LastName = lname,
-        .PhoneNumber = 5513982272630,
-        .IsActivate = true,
-    };
-
-    std.debug.print("{any}\n", .{myuser});
-}
-
