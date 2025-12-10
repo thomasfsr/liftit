@@ -5,9 +5,9 @@ pub const WorkoutRepository = struct {
     vtable: *const VTable,
 
     pub const VTable = struct {
-        findById: *const fn (ptr: *anyopaque, id: i64) anyerror!?workout,
-        create: *const fn (ptr: *anyopaque, workout: workout) anyerror!Workout,
-        update: *const fn (ptr: *anyopaque, workout: workout) anyerror!Workout,
-        delete: *const fn (ptr: *anyopaque, id: i64) anyerror!void,
+        findById: *const fn (ptr: *anyopaque, id: u32) ?Workout,
+        create: *const fn (ptr: *anyopaque, workout: workout) ?Workout,
+        update: *const fn (ptr: *anyopaque, workout: workout) ?Workout,
+        delete: *const fn (ptr: *anyopaque, id: u32) void,
     };
 };
