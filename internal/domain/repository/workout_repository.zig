@@ -8,6 +8,6 @@ pub const WorkoutRepository = struct {
         findById: *const fn (ptr: *anyopaque, id: u32) ?Workout,
         create: *const fn (ptr: *anyopaque, workout: workout) ?Workout,
         update: *const fn (ptr: *anyopaque, workout: workout) ?Workout,
-        delete: *const fn (ptr: *anyopaque, id: u32) void,
+        delete: *const fn (ptr: *anyopaque, id: u32) anyerror!void,
     };
 };
