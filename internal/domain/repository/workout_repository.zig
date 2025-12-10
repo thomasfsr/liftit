@@ -1,0 +1,13 @@
+const workout = @import("../entities/workout/workout.zig");
+const Workout = workout.WorkoutSet;
+pub const WorkoutRepository = struct {
+    ptr: *anyopaque,
+    vtable: *const VTable,
+
+    pub const VTable = struct {
+        findById: *const fn (ptr: *anyopaque, id: i64) anyerror!?workout,
+        create: *const fn (ptr: *anyopaque, workout: workout) anyerror!Workout,
+        update: *const fn (ptr: *anyopaque, workout: workout) anyerror!Workout,
+        delete: *const fn (ptr: *anyopaque, id: i64) anyerror!void,
+    };
+};

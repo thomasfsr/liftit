@@ -1,3 +1,5 @@
+const user = @import("../entities/user/user.zig");
+const User = user.User;
 pub const UserRepository = struct {
     ptr: *anyopaque,
     vtable: *const VTable,
