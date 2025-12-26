@@ -1,27 +1,29 @@
 const std = @import("std");
-const liftit = @import("liftit");
+const Request = @import("request.zig");
+const Response = @import("response.zig");
+const Server = @import("server.zig").Server;
 
 pub fn main() !void {
-    // Prints to stderr, ignoring potential errors.
-    std.debug.print("All your {s} are belong to us.\n", .{"codebase"});
-    try liftit.bufferedPrint();
-}
+    var alloc = std.heap.GeneralPurposeAllocator(.{}){};
+    const gpa = alloc.allocator();
+    var threaded: std.Io.Threaded = .init(gpa);
+    const io = threaded.io();
+    defer threaded.deinit();
 
-test "simple test" {
-    const gpa = std.testing.allocator;
-    var list: std.ArrayList(i32) = .empty;
-    defer list.deinit(gpa); // Try commenting this out and see if zig detects the memory leak!
-    try list.append(gpa, 42);
-    try std.testing.expectEqual(@as(i32, 42), list.pop());
-}
+    const server = try Server.init(io);
+    var listening = try server.listen();
+    const connection = try listening.accept(io);
+    defer connection.close(io);
 
-test "fuzz example" {
-    const Context = struct {
-        fn testOne(context: @This(), input: []const u8) anyerror!void {
-            _ = context;
-            // Try passing `--fuzz` to `zig build test` and see if it manages to fail this test case!
-            try std.testing.expect(!std.mem.eql(u8, "canyoufindme", input));
+    var request_buffer: [1000]u8 = undefined;
+    @memset(request_buffer[0..], 0);
+    try Request.read_request(io, connection, request_buffer[0..]);
+    const request = Request.parse_request(request_buffer[0..]);
+    if (request.method == Method.GET) {
+        if (std.mem.eql(u8, request.uri, "/")) {
+            try Response.send_200(connection, io);
+        } else {
+            try Response.send_404(connection, io);
         }
-    };
-    try std.testing.fuzz(Context{}, Context.testOne, .{});
+    }
 }
